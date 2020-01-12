@@ -20,7 +20,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+public class ScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new android.support.v7.app.AlertDialog.Builder(MainActivity.this)
+        new android.support.v7.app.AlertDialog.Builder(ScannerActivity.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                scannerView.resumeCameraPreview(MainActivity.this);
+                scannerView.resumeCameraPreview(ScannerActivity.this);
             }
         });
         builder.setNeutralButton("Visit", new DialogInterface.OnClickListener() {
