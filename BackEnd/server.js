@@ -38,7 +38,7 @@ db.initialize(dbName, collectionName, function (dbCollection) { // successCallba
         const itemId = request.params.id;
         var barcode = parseInt(itemId, 10)
         
-        dbCollection.findOne({ _id: barcode }, (error, result) => {
+        dbCollection.findOne({ barcode: barcode }, (error, result) => {
            if (error) throw error;
            // return item
            response.json(result);
