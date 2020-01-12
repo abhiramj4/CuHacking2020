@@ -1,68 +1,91 @@
 // Require express and create an instance of it
 var express = require('express');
-var app = express();
+var server = express();
 
 const body_parser = require("body-parser");
 
-app.use(body_parser.json());
+server.use(body_parser.json());
 
 const db = require("./db");
 const dbName = "EcoStep"
 const collectionName = "EcoStep"
-
-// on the request to root (localhost:3000/)
-app.get('/', function (req, res) {
-    res.send('My first express http server. Sahil is a hoe.');
-});
-
-// On localhost:3000/welcome
-app.get('/welcome', function (req, res) {
-    res.send('Hello welcome to my http server made with express. Sahil is a hoe.');
-});
-
-// Get barcode number from db
-app.get('/barcode/:barNum', function(req, res){
-
-});
+const port = 3000;
 
 
-// Change the 404 message modifing the middleware
-app.use(function(req, res, next) {
-
-    
-    res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
-
-
-    
-});
-
-// start the server in the port 3000 !
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000.');
-    
-    
-});
-
-db.initialize(dbName, collectionName, function(dbCollection) { // successCallback
-    console.log(dbCollection)
+db.initialize(dbName, collectionName, function (dbCollection) { // successCallback
     // get all items
-    dbCollection.find().toArray(function(err, result) {
-        if (err) throw err;
-          console.log(result);
+    dbCollection.find().toArray(function (err, result) {
+       if (err) throw err;
+       console.log(result);
+ 
+       // << return response to client >>
     });
-
+ 
     // << db CRUD routes >>
-
-}, function(err) { // failureCallback
-    throw (err);
-});
-
-app.get("/items/:id", (request, response) => {
-    const itemId = request.params.id;
-
-    dbCollection.findOne({ id: itemId }, (error, result) => {
-        if (error) throw error;
-        // return item
-        response.json(result);
-    });
-});
+    server.post("/items", (request, response) => {
+        const item = request.body;
+        dbCollection.insertOne(item, (error, result) => { // callback of insertOne
+           if (error) throw error;
+           // return updated list
+           dbCollection.find().toArray((_error, _result) => { // callback of find
+              if (_error) throw _error;
+              response.json(_result);
+           });
+        });
+     });
+  
+     server.get("/items/:id", (request, response) => {
+        const itemId = 1
+        console.log(typeof(1))
+        
+        dbCollection.findOne({ _id: 2 }, (error, result) => {
+           if (error) throw error;
+           // return item
+           response.json(result);
+        });
+     });
+  
+     server.get("/items", (request, response) => {
+        // return updated list
+        dbCollection.find().toArray((error, result) => {
+           if (error) throw error;
+           response.json(result);
+        });
+     });
+  
+     server.put("/items/:id", (request, response) => {
+        const itemId = request.params.id;
+        const item = request.body;
+        console.log("Editing item: ", itemId, " to be ", item);
+  
+        dbCollection.updateOne({ id: itemId }, { $set: item }, (error, result) => {
+           if (error) throw error;
+           // send back entire updated list, to make sure frontend data is up-to-date
+           dbCollection.find().toArray(function (_error, _result) {
+              if (_error) throw _error;
+              response.json(_result);
+           });
+        });
+     });
+  
+     server.delete("/items/:id", (request, response) => {
+        const itemId = request.params.id;
+        console.log("Delete item with id: ", itemId);
+  
+        dbCollection.deleteOne({ id: itemId }, function (error, result) {
+           if (error) throw error;
+           // send back entire updated list after successful request
+           dbCollection.find().toArray(function (_error, _result) {
+              if (_error) throw _error;
+              response.json(_result);
+           });
+        });
+     });
+  
+  }, function (err) { // failureCallback
+     throw (err);
+  });
+  
+  server.listen(port, () => {
+     console.log(`Server listening at ${port}`);
+  });
