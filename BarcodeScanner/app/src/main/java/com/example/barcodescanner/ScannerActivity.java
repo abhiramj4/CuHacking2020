@@ -145,6 +145,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         });
         builder.setMessage(result.getText());
         AlertDialog alert1 = builder.create();
-        alert1.show();
+//        alert1.show();
+
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("bid", Integer.parseInt(myResult));
+        startActivity(intent);
     }
 }
