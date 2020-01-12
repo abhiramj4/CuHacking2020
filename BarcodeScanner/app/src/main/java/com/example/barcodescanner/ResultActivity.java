@@ -2,6 +2,7 @@ package com.example.barcodescanner;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -24,7 +26,7 @@ public class ResultActivity extends AppCompatActivity {
     private TextView estText;
     private JSONObject trial;
     private String materialString;
-    private JSONArray materialList;
+    private Iterator<String> keys;
     //    int id = getIntent().getIntExtra("bid", 0 );
 
     @Override
@@ -62,13 +64,22 @@ public class ResultActivity extends AppCompatActivity {
                     final String myResponse = response.body().string();
                     try {
                         trial = new JSONObject(myResponse);
-                        materialList = trial.getJSONArray("composition");
-                        for (int i = 0; i < materialList.length(); i++) {
-                            JSONObject jsonObj = materialList.getJSONObject(i);
-                            String k = jsonObj.keys().next();
-                            materialString += (k+ " "+ jsonObj.getInt("k"));
-//                            Log.i("Info", "Key: " + k + ", value: " + jsonObj.getString(k));
+                        keys = trial.getJSONObject("composition").keys();
+                        while(keys.hasNext()){
+                            String key = keys.next();
+                            String val = trial.getJSONObject("composition").getString(key);
+                            Log.i("info", val );
+                            if(val != null && key != null) {
+                                materialString += (key + " " + val);
+                            }
                         }
+
+//                        for (int i = 0; i < materialList.length(); i++) {
+//                            JSONObject jsonObj = materialList.getJSONObject(i);
+//                            String k = jsonObj.keys().next();
+//                            materialString += (k+ " "+ jsonObj.getInt("k"));
+//                            Log.i("Info", "Key: " + k + ", value: " + jsonObj.getString(k));
+//                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -80,6 +91,17 @@ public class ResultActivity extends AppCompatActivity {
                                 styleText.setText(trial.getString("style"));
                                 manutext.setText(trial.getString("madeIn"));
                                 materialsText.setText(materialString);
+                                switch(trial.getString("madeIn")){
+                                    case "India":
+                                        estText.setText("3.80");
+                                         break;
+                                    case "USA":
+                                        estText.setText("2.35");
+                                        break;
+                                    default:
+                                        estText.setText("4.24");
+                                        break;
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
