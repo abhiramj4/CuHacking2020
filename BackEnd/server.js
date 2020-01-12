@@ -35,10 +35,10 @@ db.initialize(dbName, collectionName, function (dbCollection) { // successCallba
      });
   
      server.get("/items/:id", (request, response) => {
-        const itemId = 1
-        console.log(typeof(1))
+        const itemId = request.params.id;
+        var barcode = parseInt(itemId, 10)
         
-        dbCollection.findOne({ _id: 2 }, (error, result) => {
+        dbCollection.findOne({ _id: barcode }, (error, result) => {
            if (error) throw error;
            // return item
            response.json(result);
