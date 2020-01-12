@@ -12,6 +12,7 @@ const collectionName = "EcoStep"
 const port = 3000;
 
 
+
 db.initialize(dbName, collectionName, function (dbCollection) { // successCallback
     // get all items
     dbCollection.find().toArray(function (err, result) {
@@ -33,6 +34,10 @@ db.initialize(dbName, collectionName, function (dbCollection) { // successCallba
            });
         });
      });
+
+     server.get('/', (request, response) => {
+        response.send('Hello from Express!')
+      });
   
      server.get("/items/:id", (request, response) => {
         const itemId = request.params.id;
