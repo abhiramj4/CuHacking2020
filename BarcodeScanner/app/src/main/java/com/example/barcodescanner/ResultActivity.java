@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -22,7 +23,9 @@ public class ResultActivity extends AppCompatActivity {
     private TextView manutext;
     private TextView estText;
     private JSONObject trial;
-//    int id = getIntent().getIntExtra("bid", 0 );
+    private String materialString;
+    private JSONArray materialList;
+    //    int id = getIntent().getIntExtra("bid", 0 );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,13 @@ public class ResultActivity extends AppCompatActivity {
                     final String myResponse = response.body().string();
                     try {
                         trial = new JSONObject(myResponse);
+                        materialList = trial.getJSONArray("composition");
+                        for (int i = 0; i < materialList.length(); i++) {
+                            JSONObject jsonObj = materialList.getJSONObject(i);
+                            String k = jsonObj.keys().next();
+                            materialString += (k+ " "+ jsonObj.getInt("k"));
+//                            Log.i("Info", "Key: " + k + ", value: " + jsonObj.getString(k));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -69,7 +79,7 @@ public class ResultActivity extends AppCompatActivity {
                             try {
                                 styleText.setText(trial.getString("style"));
                                 manutext.setText(trial.getString("madeIn"));
-                                materialsText.setText(trial.getJSONObject("composition").getString("cotton"));
+                                materialsText.setText(materialString);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
