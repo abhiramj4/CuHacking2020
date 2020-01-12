@@ -57,11 +57,10 @@ db.initialize(dbName, collectionName, function(dbCollection) { // successCallbac
     throw (err);
 });
 
-
-app.get("/items/:barcode", (request, response) => {
+app.get("/items/:id", (request, response) => {
     const itemId = request.params.id;
 
-    dbCollection.findOne({ barcode: itemId }, (error, result) => {
+    dbCollection.findOne({ id: itemId }, (error, result) => {
         if (error) throw error;
         // return item
         response.json(result);
