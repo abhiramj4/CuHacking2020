@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -17,6 +20,7 @@ import okhttp3.Response;
 
 public class ResultActivity extends AppCompatActivity {
     private TextView mTextViewResult;
+    private JSONObject trial;
 //    int id = getIntent().getIntExtra("bid", 0 );
 
     @Override
@@ -30,7 +34,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void request(int barcode){
-        mTextViewResult = findViewById(R.id.text_view_result);
+        mTextViewResult = findViewById(R.id.materials);
         String url = "https://ecostep.herokuapp.com/items/" + barcode;
         OkHttpClient client = new OkHttpClient();
 
@@ -49,11 +53,20 @@ public class ResultActivity extends AppCompatActivity {
                 //get json
                 if(response.isSuccessful()){
                     final String myResponse = response.body().string();
+                    try {
+                        trial = new JSONObject(myResponse);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     ResultActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTextViewResult.setText(myResponse);
+                            try {
+                                mTextViewResult.setText(trial.getString("String"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
