@@ -69,6 +69,7 @@ public class ResultActivity extends AppCompatActivity {
                             try {
                                 styleText.setText(trial.getString("style"));
                                 manutext.setText(trial.getString("madeIn"));
+                                materialsText.setText(trial.getJSONObject("composition").getString("cotton"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
