@@ -9,6 +9,7 @@
   "author": "Hari, Sahil, Abhi",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongodb": "^3.4.1"
   }
 }
